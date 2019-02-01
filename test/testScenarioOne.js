@@ -45,12 +45,12 @@ describe(`#check correct update requests`, function () {
     const queryResult = await dbMethods.simpleQuery();
     const values = await sheetCommands.combineDataToArray(queryResult);
     const response = await sheetCommands.writeToExcel(values);
-    expect(response.config.url).to.be.equal(`https://sheets.googleapis.com/v4/spreadsheets/1Oz-wxvVuotqCo25UIwkNnVhqf2nDyrz6aokYz0Py80I/values/Info!A2:G`);
+    expect(response.config.url).to.be.contain(docId);
   });
 
   it(`should return code 200 if request is correct`, async function () {
     const auth = await setToken(await getCredentials());
-    const response = await sheetCommands.readFrom(auth, `docId`, `A1:G`);
+    const response = await sheetCommands.readFrom(auth, docId, `A1:G`);
     expect(response.status).to.be.equal(200);
   });
 });

@@ -38,8 +38,8 @@ async function simpleQuery () {
 
   const client = await getConnection(url);
   const db = await client.db(`usersdb`);
-  const queryForCollectionClean = await { $or: [{ _id: { $type: 1 } }, { _id: { $type: 16 } }, { _id: { $type: 18 } }] };
-  await db.collection(`qOneResult`).deleteMany(queryForCollectionClean);
+  const queryForCollectionClean = { $or: [{ _id: { $type: 1 } }, { _id: { $type: 16 } }, { _id: { $type: 18 } }] };
+  db.collection(`qOneResult`).deleteMany(queryForCollectionClean);
   let queryResult = await db.collection(`orders`).aggregate(productOrdersMerge).toArray();
   await db.collection(`qOneResult`).insertMany(await queryResult);
   queryResult = await db.collection(`qOneResult`).aggregate(resultContactsMerge).toArray();
