@@ -6,36 +6,6 @@ const dbMethods = require(path.resolve(`./src/dbMethods.js`));
 const sheetCommands = require(path.resolve(`./src/sheetCommands.js`));
 const docId = `1Oz-wxvVuotqCo25UIwkNnVhqf2nDyrz6aokYz0Py80I`;
 
-// Bad Data
-describe(`#check incorrect update requests`, function () {
-  it(`should return code 400 if data is bad`, async () => {
-    const errorObject = await sheetCommands.writeToExcel(357);
-    expect(errorObject.code).to.be.equal(400);
-  });
-
-  it(`should return code 401 if credentials are incorrect`, async function () {
-    const queryResult = await dbMethods.simpleQuery();
-    const values = await sheetCommands.combineDataToArray(queryResult);
-    const errorObject = await sheetCommands.writeTo(null, docId, values);
-    expect(errorObject.code).to.be.equal(401);
-  });
-
-  it(`should return code 404 if document id is incorrect`, async function () {
-    const queryResult = await dbMethods.simpleQuery();
-    const values = await sheetCommands.combineDataToArray(queryResult);
-    const auth = await sheetCommands.setToken(await sheetCommands.getCredentials());
-    const errorObject = await sheetCommands.writeTo(auth, `1Oz-wxvVuctqCo25UIwkNnVhqf2nDyrz6aokYz0Py80I`, values);
-    expect(errorObject.code).to.be.equal(404);
-  });
-
-  it(`should return code 403 if trying to write to other user's document`, async function () {
-    const queryResult = await dbMethods.simpleQuery();
-    const values = await sheetCommands.combineDataToArray(queryResult);
-    const auth = await sheetCommands.setToken(await sheetCommands.getCredentials());
-    const errorObject = await sheetCommands.writeTo(auth, `1_h0IJNVSFt3spK_jmC8Hv4GUVPjTKVDMPWPQv_VD8Mw`, values);
-    expect(errorObject.code).to.be.equal(403);
-  });
-});
 // Correct
 describe(`#check correct update requests`, function () {
   it(`should return code 200 if request is correct`, async function () {
@@ -82,5 +52,36 @@ describe(`#check correct update requests`, function () {
     const auth = await setToken(await getCredentials());
     const response = await sheetCommands.readFrom(auth, `docId`, `A1:G`);
     expect(response.status).to.be.equal(200);
+  });
+});
+
+// Bad Data
+describe(`#check incorrect update requests`, function () {
+  it(`should return code 400 if data is bad`, async () => {
+    const errorObject = await sheetCommands.writeToExcel(357);
+    expect(errorObject.code).to.be.equal(400);
+  });
+
+  it(`should return code 401 if credentials are incorrect`, async function () {
+    const queryResult = await dbMethods.simpleQuery();
+    const values = await sheetCommands.combineDataToArray(queryResult);
+    const errorObject = await sheetCommands.writeTo(null, docId, values);
+    expect(errorObject.code).to.be.equal(401);
+  });
+
+  it(`should return code 404 if document id is incorrect`, async function () {
+    const queryResult = await dbMethods.simpleQuery();
+    const values = await sheetCommands.combineDataToArray(queryResult);
+    const auth = await sheetCommands.setToken(await sheetCommands.getCredentials());
+    const errorObject = await sheetCommands.writeTo(auth, `1Oz-wxvVuctqCo25UIwkNnVhqf2nDyrz6aokYz0Py80I`, values);
+    expect(errorObject.code).to.be.equal(404);
+  });
+
+  it(`should return code 403 if trying to write to other user's document`, async function () {
+    const queryResult = await dbMethods.simpleQuery();
+    const values = await sheetCommands.combineDataToArray(queryResult);
+    const auth = await sheetCommands.setToken(await sheetCommands.getCredentials());
+    const errorObject = await sheetCommands.writeTo(auth, `1_h0IJNVSFt3spK_jmC8Hv4GUVPjTKVDMPWPQv_VD8Mw`, values);
+    expect(errorObject.code).to.be.equal(403);
   });
 });
